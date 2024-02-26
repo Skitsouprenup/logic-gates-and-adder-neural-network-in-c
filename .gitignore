@@ -1,0 +1,4 @@
+#ignores everything
+*
+# unignores all files with an extension.
+!*.* 
