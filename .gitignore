@@ -2,3 +2,4 @@
 *
 # unignores all files with an extension.
 !*.* 
+!LICENSE

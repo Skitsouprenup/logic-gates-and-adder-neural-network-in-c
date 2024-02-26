@@ -54,19 +54,19 @@ int main(int argc, char *argv[]) {
     //loop columns and fill up the matrix
     for(int j = 0; j < BITS; j++) {
       //Note: use &1 to ignore all bits except
-      //for the leftmost bit. For example:
+      //for the rightmost bit. For example:
       //1011 & 0001 = 0001
       
       //Note: bit arrangement in each row of
       //'ti' doesn't matter because we're just 
       //doing binary addition. For example, 2 = 1 0
       //but in this loop it will be arranged
-      //'0 1' because we extract the first leftmost
+      //'0 1' because we extract the first rightmost
       //bit of a number and this loop arrange bits
       //from left to right. Adding '1 0' or '0 1'
       //will have equal answer.
 
-      //Extract leftmost bit
+      //Extract rightmost bit
       //Example:
       //x = 1 0 1
       //x>>0 = 1 0 1
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
       //(x>>2)&1 = 1 & 1 = [1]
 
       ti.start[getCell(ti, i, j)] = (x>>j)&1;
-      //Transfer y's leftmost bit to the next sub-array
+      //Transfer y's rightmost bit to the next sub-array
       ti.start[getCell(ti, i, j + BITS)] = (y>>j)&1;
       
       to.start[getCell(to, i, j)] = (z>>j)&1;
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     //of adder is 2, value 3(binary = 1 1) is the 
     //max number that we can store. Values greater than
     //3 makes the sum overflows. For example, 
-    //4(binary = 1 0 0) has 3 bits. The '1' rightmost bit
+    //4(binary = 1 0 0) has 3 bits. The '1' leftmost bit
     //is the carry.
     to.start[getCell(to, i, BITS)] = z >= n;
   }
@@ -101,16 +101,16 @@ int main(int argc, char *argv[]) {
   NeuralNetwork gradient = createNetwork(nModel, ARRAY_LENGTH(nModel));
   randNetwork(neuralNet, 0, 1);
 
-  char gradType = 'b';
+  char reduceType = 'b';
   if(argv[1] != NULL) {
     if(strcmp(argv[1], "b") == 0) {
-      gradType = 'b';
+      reduceType = 'b';
     }
     else if(strcmp(argv[1], "f") == 0) {
-      gradType = 'f';
+      reduceType = 'f';
     }
-    else gradType = 'b'; //default
-  } else gradType = 'b'; //default
+    else reduceType = 'b'; //default
+  } else reduceType = 'b'; //default
 
 
   printf("Cost Before Training: %f\n", computeCost(neuralNet, ti, to));
@@ -136,11 +136,11 @@ int main(int argc, char *argv[]) {
   }
   printf("Cost After Training: %f\n", computeCost(neuralNet, ti, to));
 
-  if(gradType == 'b') {
-    printf("\nGradient used: Back Propagation\n\n");
+  if(reduceType == 'b') {
+    printf("\nCost Reduction used: Back Propagation\n\n");
   }
-  else if(gradType == 'f') {
-    printf("\nGradient used: Finite Difference\n\n");
+  else if(reduceType == 'f') {
+    printf("\nCost Reduction used: Finite Difference\n\n");
   }
 
   size_t fails = 0;
